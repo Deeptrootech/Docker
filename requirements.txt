@@ -1,0 +1,9 @@
+Django==5.2.5
+gunicorn==23.0.0
+psycopg2==2.9.10
+whitenoise==6.9.0
+django-jazzmin==3.0.1
+openpyxl==3.1.5
+pdfkit==1.0.0
+pandas==2.3.2
+django-environ==0.12.0

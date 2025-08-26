@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="{% static '../media/fav_icon.png' %}" rel="icon" type="image/x-icon">
+    <link href="{% static 'css/main.css' %}" rel="stylesheet" type="text/css"/>
+
+</head>
+<body>
+
+<div class="container">
+    Books List:
+    <ul>
+        {% for i in book %}
+        <li>{{i}}</li>
+        {% endfor %}
+
+    </ul>
+
+</div>
+<img alt="no-content" class="img_container" src="{% static '../media/fav_icon.png' %}">
+</body>
+</html>

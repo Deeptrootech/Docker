@@ -1,0 +1,27 @@
+version: "3.8"
+
+
+services:
+  db:
+    image: postgres
+    container_name: bookstall_postgres_db
+    env_file:
+      - .env
+    ports:
+      - "9006:5432"   # host:container
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # persistent DB storage
+
+  web:
+    build: .
+    container_name: bookstall_django_app
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/bookstall_app      # mount your project for live reload
+    ports:
+      - "8000:8000"           # access Django from host browser
+    depends_on:
+      - db      # ensures Postgres starts first
+
+volumes:
+  postgres_data:
