@@ -28,7 +28,7 @@ if READ_DOT_ENV_FILE:
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env.str("SECRET_KEY")
+SECRET_KEY = env.str("SECRET_KEY", default="")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = STAGING = env.bool("DEBUG", False)
 ALLOWED_HOSTS = env.str("ALLOWED_HOSTS", "127.0.0.1").split(",")
