@@ -3,7 +3,7 @@ from django.views.generic import ListView, CreateView
 
 import pandas as pd
 from django.http import HttpResponse
-from app_bookstall.models import Book
+from app_bookstall.models import Book, Author, Publisher
 from django.template.loader import render_to_string
 import pdfkit
 
@@ -19,6 +19,26 @@ class BookCreate(CreateView):
     model = Book
     fields = ["title", "authors", "publisher"]
     template_name = "add_book.html"
+    success_url = "/books"
+
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
+
+class AuthorCreate(CreateView):
+    model = Author
+    fields = ["name"]
+    template_name = "add_author.html"
+    success_url = "/books"
+
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
+
+class PublisherCreate(CreateView):
+    model = Publisher
+    fields = ["name"]
+    template_name = "add_publisher.html"
     success_url = "/books"
 
     def post(self, request, *args, **kwargs):
@@ -44,4 +64,3 @@ def export_books_pdf(request):
     response = HttpResponse(pdf, content_type="application/pdf")
     response["Content-Disposition"] = 'attachment; filename="books.pdf"'
     return response
-
