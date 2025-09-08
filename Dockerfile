@@ -44,7 +44,7 @@ COPY . .
 # will listen on port 8000 (common for Django apps)
 EXPOSE 8000
 
-# ------ 8. Define the default command to run when the container starts
+# ------ 8. Define the default command to run INSIDE THE CONTAINER when the container starts
 # Here, it starts Django’s development server, binding it to 0.0.0.0:8000
 # Without 0.0.0.0, Django would default to 127.0.0.1 (localhost), which would not be reachable from outside the container.
 # so it can accept external connections (not just from inside the container)

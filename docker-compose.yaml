@@ -1,5 +1,3 @@
-version: "3.8"
-
 
 services:
   db:
@@ -13,6 +11,12 @@ services:
       - "9006:5432"   # host:container
     volumes:
       - postgres_data:/var/lib/postgresql/data  # persistent DB storage
+  redis:
+    image: redis:8
+    container_name: bookstall_redis
+    restart: always
+    ports:
+      - "9007:6379"  # expose Redis for debugging
 
   web:
     build: .
@@ -23,7 +27,7 @@ services:
     volumes:
       - .:/bookstall_app      # mount your project for live reload
     ports:
-      - "8000:8000"           # access Django from host browser
+      - "8003:8000"           # host:8003 -> container:8000
     depends_on:
       - db      # ensures Postgres starts first
 
