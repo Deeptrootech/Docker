@@ -1,0 +1,61 @@
+(1) WHAT IS REDIS ?
+- Redis is an open-source, in-memory NoSQL database. (stores data in key-value pairs)
+- used mostly as caching, and message broker.
+- Redis primarily stores data in RAM, allowing for exceptionally fast data retrieval and processing compared to disk-based databases.
+
+(2) How redis work as message broker with celery ?
+
++------------------+       1. send task        +------------------+
+|    Django App    | -----------------------> |      Redis        |
+|  (Producer)      |                         |   (Message Broker) |
++------------------+                          +------------------+
+        ^                                             |
+        |                                             |
+        | 4. return result                            |
+        | (if backend=redis)                          v
++------------------+       2. fetch task       +------------------+
+|   Celery Worker  | <----------------------- |      Redis        |
+|  (Consumer)      |                          |   (Message Broker) |
++------------------+       3. execute task    +------------------+
+
+-------------------------------------------------------------------------------------------------------------
+(3) How ---> Redis Container, redis library & django-redis <--- Work Together ?
+
+1. bookstall_redis (Redis container):
+- This is the actual Redis server running inside a Docker container named (bookstall_redis).
+- Think of it like Postgres running in a DB container.
+- It listens on a port (default 6379) and handles all Redis commands — storing cache, sessions, message queues, etc.
+--------------------------------------------------
+
+2. redis library (Python library):
+- This is the client library for Python.
+- Allows Django or Celery to talk to the Redis server over the network.
+- Works like psycopg2 does for Postgres — the server runs elsewhere, the library is how Python sends commands and gets responses.
+
+--------------------------------------------------
+3.️ django-redis (Django integration):
+- This is a Django wrapper around the redis Python library.
+- Only needed if you want to use Redis for Django caching or sessions.
+- Makes it easy to configure Django cache backends:
+
+```
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://redis:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+```
+
+- Now, cache.set() and cache.get() in Django will use Redis transparently.
+---------------------------------------------------
+
+
+
+
+Reference:
+--------------------------------------------
+-> https://www.youtube.com/watch?v=xDUDVpxLkok

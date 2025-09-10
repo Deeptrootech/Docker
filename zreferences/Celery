@@ -1,0 +1,26 @@
+(1) WHAT IS CELERY ?
+- Celery is an open-source, distributed task queue system for Python.
+- which that enables the execution of asynchronous tasks for Python.
+
+Key Components of Celery:
+- Client:
+   => The part of your application that sends tasks to the message broker.
+- Message Broker:
+   => An intermediary that queues up tasks. Common choices include RabbitMQ and Redis.
+- Worker:
+   => Dedicated processes that constantly monitor the message broker for new tasks and execute them.
+- Result Backend (Optional):
+   => Used to store and retrieve the results of executed tasks.
+
+How Celery Works:
+- A client application initiates a task and sends it to the message broker.
+- The message broker queues the task, making it available for processing.
+- Celery workers, running in the background, pick up tasks from the queue.
+- The workers execute the tasks asynchronously, meaning the main application can continue processing other requests without waiting for the task to complete.
+- If a result backend is configured, the worker can store the task's result for later retrieval by the client.
+
+
+----------------------
+Reference:
+-----------------------
+- youtube geeky shows

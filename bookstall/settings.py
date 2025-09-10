@@ -23,7 +23,6 @@ if READ_DOT_ENV_FILE:
     # OS environment variables take precedence over variables from .env
     env.read_env(env_file=Path(BASE_DIR) / ".env")
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -131,16 +130,29 @@ DATABASES = {
         ),
     }
 }
+# -----------------------------------------------------------------------------------------
+# Redis supports multiple logical databases inside one server (0–15 by default).
+# By convention:
+#   DB 0 → often used as Celery broker / result backend
+#   DB 1 → can be used as Django cache/session storage
+# This separation avoids conflicts between Celery tasks and Django caching data.
 
+# cache with redis   --------- Redis Usecase 1 as a ("Django cache")----------
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": env.str("REDIS_URL", default="redis://redis:6379/1"),
+        "LOCATION": env.str("REDIS_AS_CACHE_URL", default="redis://redis:6379/1"),  # separate DB
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     }
 }
+
+# Celery with redis    --------- Redis Usecase 2 as a ("Celery broker" or say "message broker")----------
+CELERY_BROKER_URL = env.str("REDIS_AS_BROKER_URL", default="redis://redis:6379/0")
+CELERY_RESULT_BACKEND = env.str("REDIS_AS_BROKER_URL", default="redis://redis:6379/0")
+# ------------------------------------------------------------------------------------------
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
