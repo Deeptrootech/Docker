@@ -1,0 +1,22 @@
+🔹 ********** Workflow of `docker compose up` **********
+
+step-1. **Read `docker-compose.yml`**
+   - Finds services, ports, volumes, environment variables, etc.
+
+step-2. **Check images for each service**
+   - If `build:` → builds image from Dockerfile **only if needed** (new or changed, or forced with `--build`).
+   - If `image:` → look for local image.
+     - If not found → pull from registry (e.g., Docker Hub).
+
+step-3. **Create network(s)**
+   - Docker Compose makes a default network so services can talk to each other by name.
+
+step-4. **Create volumes (if defined)**
+   - For data persistence (e.g., Postgres, Redis data).
+
+step-5. **Start containers**
+   - Each service container starts with its `CMD`/`ENTRYPOINT` from the image.
+
+step-6. **Orchestration**
+   - Services run together, connected via the network.
+   - Logs from all containers stream to your terminal.
