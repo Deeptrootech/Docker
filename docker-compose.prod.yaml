@@ -1,0 +1,65 @@
+services:
+  # ----------------------- Postgres DB -----------------------
+  db:
+    image: postgres:17
+    container_name: bookstall_postgres_db
+    environment:
+      POSTGRES_DB: bookstall_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: bookstall_postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - bookstall_net
+
+  # ----------------------- Redis -----------------------
+  redis:
+    image: redis:8
+    container_name: bookstall_redis
+    restart: always
+    networks:
+      - bookstall_net
+
+  # ----------------------- Django App (Gunicorn) -----------------------
+  webapp:
+    build: .
+    container_name: bookstall_django_app
+    command: gunicorn bookstall.wsgi:application --bind 0.0.0.0:8000 --workers 4
+    env_file:
+      - .env.prod
+    environment:
+      - APP_NAME=bookstall_app
+    volumes:
+      - .:/bookstall_app:ro  # Read-only in prod
+      - static_volume:/bookstall_app/static_prod
+      - media_volume:/bookstall_app/media
+    depends_on:
+      - db
+      - redis
+    networks:
+      - bookstall_net
+
+  # ----------------------- Nginx -----------------------
+  nginx:
+    image: nginx:alpine
+    container_name: nginx_prod
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.prod.conf:/etc/nginx/nginx.conf:ro
+      - static_volume:/app/static
+      - media_volume:/app/media
+      - ./certs:/etc/ssl/certs  # if using SSL
+    depends_on:
+      - webapp
+    networks:
+      - bookstall_net
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
+
+networks:
+  bookstall_net:
