@@ -26,7 +26,6 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 ENV DJANGO_SETTINGS_MODULE=bookstall.settings.prod
-RUN python manage.py collectstatic --noinput
 
 # ------------------------------------------------------------------------------------------
 # 4. Set the working directory inside the container
@@ -54,6 +53,7 @@ RUN pip install -r requirements.txt
 #   into the '/bookstall_app' directory inside the container
 # ------------------------------------------------------------------------------------------
 COPY . .
+RUN python manage.py collectstatic --noinput
 
 # ------------------------------------------------------------------------------------------
 # 8. Expose port 8000 to the outside world
@@ -64,7 +64,14 @@ EXPOSE 8000
 
 # ------------------------------------------------------------------------------------------
 # 9. Define the default command to run INSIDE THE CONTAINER when the container starts
+
+#   Instead of hardcoding CMD gunicorn like below comment..., use an entrypoint.sh:
+#   CMD ["gunicorn", "bookstall.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4"]
+
 # ------------------------------------------------------------------------------------------
-CMD ["gunicorn", "bookstall.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4"]
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
+
 
 

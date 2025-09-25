@@ -10,7 +10,7 @@ Clean and production-safe .env handling.
 from pathlib import Path
 import os
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # -----------------------------
 # Applications

@@ -43,7 +43,9 @@ services:
     depends_on:
       - db      # ensures Postgres starts first
   webapp2:
-    build: . # build the image from the Dockerfile... Docker will look for a file named Dockerfile (default name) in that directory.
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
     container_name: bookstall_django_app_2
     command: python manage.py runserver 0.0.0.0:8000
     env_file:
@@ -57,7 +59,9 @@ services:
     depends_on:
       - db      # ensures Postgres starts first
   webapp3:
-    build: . # build the image from the Dockerfile... Docker will look for a file named Dockerfile (default name) in that directory.
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
     container_name: bookstall_django_app_3
     command: python manage.py runserver 0.0.0.0:8000
     env_file:
@@ -78,7 +82,7 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
       - ./static:/app/static
       - ./media:/app/media
     depends_on:
