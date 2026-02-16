@@ -1,5 +1,7 @@
 services:
-  # ----------------------- Postgres DB -----------------------
+  # -----------------------------
+  # Postgres DB
+  # -----------------------------
   db:
     image: postgres:17
     container_name: bookstall_postgres_db
@@ -12,7 +14,9 @@ services:
     networks:
       - bookstall_net
 
-  # ----------------------- Redis -----------------------
+  # -----------------------------
+  # Redis (for caching & Celery broker)
+  # -----------------------------
   redis:
     image: redis:8
     container_name: bookstall_redis
@@ -20,10 +24,13 @@ services:
     networks:
       - bookstall_net
 
-  # ----------------------- Django App (Gunicorn) -----------------------
-  webapp:
+  # -----------------------------
+  # Django App replicas (Gunicorn)
+  # -----------------------------
+  # TODO:  Need to learn and proper configuration regarding production
+  webapp-1:
     build: .
-    container_name: bookstall_django_app
+    container_name: bookstall_django_app_1
     command: gunicorn bookstall.wsgi:application --bind 0.0.0.0:8000 --workers 4
     env_file:
       - .env.prod
@@ -39,7 +46,9 @@ services:
     networks:
       - bookstall_net
 
-  # ----------------------- Nginx -----------------------
+  # -----------------------------
+  # Nginx (reverse proxy + load balancing + TLS termination)
+  # -----------------------------
   nginx:
     image: nginx:alpine
     container_name: nginx_prod
@@ -55,6 +64,7 @@ services:
       - webapp
     networks:
       - bookstall_net
+    restart: always
 
 volumes:
   postgres_data:
